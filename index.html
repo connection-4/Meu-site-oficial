@@ -16,24 +16,90 @@
 	<style>
 		* { box-sizing: border-box; }
 		body { margin: 0; background: #f4f6f2; color: #17211e; font-family: 'DM Sans', sans-serif; }
+		main { min-height: 100vh; }
 		h1, h2, h3, .display { font-family: 'Archivo', sans-serif; }
 		.hero-pattern { background-image: radial-gradient(rgba(20,61,50,.13) .8px, transparent .8px); background-size: 18px 18px; }
 		.product-image { transition: transform .5s ease; }
 		.product-card:hover .product-image { transform: scale(1.035); }
+		.ad-stage { min-height: 310px; }
+		.ad-slide { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; opacity: 0; transform: translateY(36px); animation: ad-slide-in 18s ease-in-out infinite; }
+		.ad-slide:nth-child(2) { animation-delay: 6s; }
+		.ad-slide:nth-child(3) { animation-delay: 12s; }
+		.ad-slide-link { width: fit-content; }
+		.ad-progress { transform-origin: left; animation: ad-progress 18s linear infinite; }
+		.ad-progress:nth-child(2) { animation-delay: 6s; }
+		.ad-progress:nth-child(3) { animation-delay: 12s; }
+		.ad-stage:hover .ad-slide, .ad-stage:focus-within .ad-slide,
+		.ad-stage:hover .ad-progress, .ad-stage:focus-within .ad-progress { animation-play-state: paused; }
+		@keyframes ad-slide-in {
+			0% { opacity: 0; transform: translateY(36px); }
+			4% { opacity: 1; transform: translateY(0); }
+			27% { opacity: 1; transform: translateY(0); }
+			32% { opacity: 0; transform: translateY(-36px); }
+			100% { opacity: 0; transform: translateY(-36px); }
+		}
+		@keyframes ad-progress {
+			0%, 32% { transform: scaleX(1); }
+			34%, 100% { transform: scaleX(0); }
+		}
 		@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+		@media (prefers-reduced-motion: reduce) {
+			.ad-stage { min-height: 0; }
+			.ad-slide { position: relative; min-height: 260px; opacity: 1; transform: none; animation: none; }
+			.ad-progress { animation: none; }
+		}
+		@media (max-width: 639px) and (prefers-reduced-motion: no-preference) { .ad-stage { min-height: 390px; } }
 	</style>
 </head>
 <body class="font-body antialiased selection:bg-citrus selection:text-ink">
-	<div class="bg-forest px-4 py-2 text-center text-xs font-medium tracking-wide text-white">ACHADOS PARA JOGAR, VESTIR E VIVER <span class="mx-2 text-citrus">/</span> novos produtos em breve</div>
+	<div class="bg-forest px-4 py-2 text-center text-xs font-medium tracking-wide text-white">PARA JOGAR, VESTIR E VIVER <span class="mx-2 text-citrus">/</span> novos produtos em breve</div>
 	<header class="sticky top-0 z-30 border-b border-line bg-paper/95 backdrop-blur">
-		<nav class="mx-auto flex h-[70px] max-w-7xl items-center justify-between px-5 lg:px-8" aria-label="Navegação principal">
+		<nav class="mx-auto flex max-w-7xl flex-col items-start gap-2 px-5 py-3 md:h-[70px] md:flex-row md:items-center md:justify-between md:gap-0 md:py-0 lg:px-8" aria-label="Navegação principal">
 			<a href="index.html" class="display text-lg font-bold tracking-tight text-forest">VITRINE<span class="text-coral">.</span></a>
-			<button id="menu-toggle" type="button" class="grid size-10 place-items-center rounded-md border border-line text-forest md:hidden" aria-expanded="false" aria-controls="site-nav" aria-label="Abrir menu"><svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-			<div id="site-nav" class="absolute left-0 right-0 top-[70px] hidden border-b border-line bg-paper px-5 py-4 md:static md:flex md:items-center md:gap-8 md:border-0 md:bg-transparent md:p-0">
-				<a class="nav-item py-2 text-sm font-medium text-muted transition hover:text-forest" href="#catalogo">Catálogo</a>
-				<a class="nav-item py-2 text-sm font-medium text-muted transition hover:text-forest" href="#games">Games</a>
-				<a class="nav-item py-2 text-sm font-medium text-muted transition hover:text-forest" href="#vestuario">Vestuário</a>
-				<a class="nav-item mt-2 inline-flex items-center justify-center gap-2 rounded-md bg-forest px-4 py-3 text-sm font-bold text-white transition hover:bg-leaf md:mt-0 md:py-2.5" href="#catalogo">Explorar produtos <span aria-hidden="true">↓</span></a>
+			<button id="menu-toggle" type="button" class="grid size-20 place-items-center rounded-md border border-line text-forest md:hidden" aria-expanded="false" aria-controls="site-nav" aria-label="Abrir menu"><svg viewBox="0 0 24 24" class="size-15" fill="none" stroke="currentColor" stroke-width="2.8" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+			<div id="site-nav" class="hidden w-full border-b border-line bg-paper py-8 md:flex md:w-auto md:flex-row md:items-center md:gap-8 md:border-0 md:bg-transparent md:py-6">
+				<div class="relative w-full md:w-auto">
+					<button id="clothing-toggle" type="button" class="flex w-full items-center justify-between py-2 text-left text-sm font-medium text-muted transition hover:text-forest md:w-auto md:gap-2" aria-expanded="false" aria-controls="clothing-options">
+						Roupas <span aria-hidden="true">⌄</span>
+					</button>
+					<div id="clothing-options" class="hidden border-l border-line pl-4 md:absolute md:left-0 md:top-full md:z-50 md:ml-0 md:mt-1 md:min-w-44 md:rounded-md md:border md:bg-paper md:p-2 md:shadow-lg">
+						<button id="men-toggle" type="button" class="flex w-full items-center justify-between py-2 text-left text-sm font-medium text-muted transition hover:text-forest" aria-expanded="false" aria-controls="men-options">
+							Masculino <span aria-hidden="true">⌄</span>
+						</button>
+						<div id="men-options" class="hidden border-l border-line pl-4">
+							<a class="nav-item block py-2 text-sm font-medium text-muted transition hover:text-forest" href="meias.html?categoria=masculino">Meias</a>
+							<span class="block py-2 text-sm font-medium text-muted">Calças <span class="text-xs font-normal">· Em breve</span></span>
+							<span class="block py-2 text-sm font-medium text-muted">Camisetas <span class="text-xs font-normal">· Em breve</span></span>
+							<span class="block py-2 text-sm font-medium text-muted">Tênis <span class="text-xs font-normal">· Em breve</span></span>
+							<span class="block py-2 text-sm font-medium text-muted">Bonés <span class="text-xs font-normal">· Em breve</span></span>
+							<span class="block py-2 text-sm font-medium text-muted">Cuecas <span class="text-xs font-normal">· Em breve</span></span>
+							<span class="block py-2 text-sm font-medium text-muted">Óculos <span class="text-xs font-normal">· Em breve</span></span>
+						</div>
+						<button id="women-toggle" type="button" class="flex w-full items-center justify-between py-2 text-left text-sm font-medium text-muted transition hover:text-forest" aria-expanded="false" aria-controls="women-options">
+							Feminino <span aria-hidden="true">⌄</span>
+						</button>
+						<div id="women-options" class="hidden border-l border-line pl-4">
+							<a class="nav-item block py-2 text-sm font-medium text-muted transition hover:text-forest" href="meias.html?categoria=feminino">Meias</a>
+							<span class="block py-2 text-sm font-medium text-muted">Calças <span class="text-xs font-normal">· Em breve</span></span>
+							<span class="block py-2 text-sm font-medium text-muted">Camisetas <span class="text-xs font-normal">· Em breve</span></span>
+							<span class="block py-2 text-sm font-medium text-muted">Saias <span class="text-xs font-normal">· Em breve</span></span>
+							<span class="block py-2 text-sm font-medium text-muted">Tênis <span class="text-xs font-normal">· Em breve</span></span>
+							<span class="block py-2 text-sm font-medium text-muted">Saltos <span class="text-xs font-normal">· Em breve</span></span>
+							<span class="block py-2 text-sm font-medium text-muted">Calcinhas <span class="text-xs font-normal">· Em breve</span></span>
+							<span class="block py-2 text-sm font-medium text-muted">Sutiã <span class="text-xs font-normal">· Em breve</span></span>
+						</div>
+					</div>
+				</div>
+				<div class="relative w-full md:w-auto">
+					<button id="electronics-toggle" type="button" class="flex w-full items-center justify-between py-2 text-left text-sm font-medium text-muted transition hover:text-forest md:w-auto md:gap-2" aria-expanded="false" aria-controls="electronics-options">
+						Eletrônicos <span aria-hidden="true">⌄</span>
+					</button>
+					<div id="electronics-options" class="hidden border-l border-line pl-4 md:absolute md:left-0 md:top-full md:z-50 md:ml-0 md:mt-1 md:min-w-44 md:rounded-md md:border md:bg-paper md:p-2 md:shadow-lg">
+						<a class="nav-item block py-2 text-sm font-medium text-muted transition hover:text-forest" href="video-games.html">Video games</a>
+						<span class="block py-2 text-sm font-medium text-muted">Celulares <span class="text-xs font-normal">· Em breve</span></span>
+					</div>
+				</div>
+				<a class="nav-item mt-2 inline-flex items-center justify-center gap-2 rounded-md bg-forest px-4 py-3 text-sm font-bold text-white transition hover:bg-leaf md:mt-0 md:py-2.5" href="video-games.html">Explorar produtos <span aria-hidden="true">→</span></a>
 			</div>
 		</nav>
 	</header>
@@ -44,59 +110,66 @@
 				<div class="max-w-xl">
 					<p class="mb-4 text-xs font-bold tracking-[.2em] text-leaf">PRODUTOS SELECIONADOS</p>
 					<h1 class="display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-[58px]">Produtos  <span class="text-forest">Originais</span></h1>
+					<h2 class="display mt-3 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-[58px]">Produtos <span class="text-forest">verificados</span></h2>
 					<p class="mt-5 max-w-lg text-base leading-7 text-muted">Do próximo jogo em família aos detalhes que deixam o dia mais confortável. Explore a vitrine e vá direto à página de cada produto.</p>
-					<a href="#catalogo" class="mt-7 inline-flex min-h-12 items-center justify-center gap-3 rounded-md bg-coral px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-forest">Ver produtos <span aria-hidden="true">↓</span></a>
 					<p class="mt-5 text-xs text-muted">Compra e disponibilidade informadas na página de cada produto.</p>
 				</div>
 				<div class="grid gap-4 sm:gap-5">
-					<a href="meias.html" class="group overflow-hidden rounded-lg border border-line bg-white p-3 shadow-sm sm:p-5">
-						<img src="meia2.webp" alt="Meia invisível branca em uso" class="product-image aspect-[1.35/1] w-full object-contain sm:aspect-[1.6/1]" fetchpriority="high">
-						<span class="mt-3 flex items-center justify-between gap-2 text-sm font-bold text-forest sm:text-base"><span>Meia invisível respirável</span><span aria-hidden="true">↗</span></span>
-					</a>
-					<a href="game-stick-m15.html" class="group flex items-center gap-4 overflow-hidden rounded-lg border border-line bg-white p-3 shadow-sm transition hover:border-forest sm:gap-6 sm:p-4">
-						<img src="game%20stick.webp" alt="Game Stick M15 com dois controles sem fio" class="product-image aspect-square w-28 shrink-0 object-contain sm:w-36" loading="lazy">
-						<span class="min-w-0"><span class="block text-[10px] font-bold uppercase tracking-[.15em] text-leaf">GAMES</span><span class="mt-1 block font-display text-base font-semibold text-forest sm:text-lg">Game Stick M15 4K</span><span class="mt-1 block text-xs leading-5 text-muted">64GB · 20.000+ jogos · 2 controles</span><span class="mt-2 inline-flex items-center gap-2 text-xs font-bold text-forest">Ver produto <span aria-hidden="true">→</span></span></span>
-					</a>
+					<div class="rounded-lg border border-line bg-white p-4 shadow-sm sm:p-5">
+						<p class="text-[10px] font-bold uppercase tracking-[.15em] text-leaf">VESTUÁRIO</p>
+						<p class="mt-1 font-display text-base font-semibold text-forest">Frete grátis</p>
+						<div class="mt-3 flex flex-wrap gap-3 text-xs font-bold text-forest">
+							<a href="meias.html?categoria=masculino" class="transition hover:text-leaf">Masculino <span aria-hidden="true">↗</span></a>
+							<a href="meias.html?categoria=feminino" class="transition hover:text-leaf">Feminino <span aria-hidden="true">↗</span></a>
+						</div>
+					</div>
 				</div>
 			</div>
 		</section>
 
-		<section id="catalogo" class="mx-auto max-w-7xl px-5 py-16 sm:py-20 lg:px-8 lg:py-24">
-			<div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-				<div><p class="mb-3 text-xs font-bold tracking-[.2em] text-leaf">A VITRINE</p><h2 class="display text-3xl font-semibold sm:text-4xl">Escolha por onde começar.</h2></div>
-				<p class="max-w-sm text-sm leading-6 text-muted">Cada produto tem sua própria página com detalhes, imagens e informações de compra.</p>
+		<section class="relative isolate overflow-hidden bg-forest px-5 py-14 text-white sm:py-18 lg:px-8 lg:py-20" aria-labelledby="product-script-title">
+			<div class="pointer-events-none absolute -right-24 -top-32 -z-10 size-80 rounded-full border border-white/10 sm:size-[30rem]"></div>
+			<div class="pointer-events-none absolute -bottom-36 -left-20 -z-10 size-72 rounded-full bg-leaf/30 blur-3xl"></div>
+			<div class="mx-auto max-w-7xl">
+				<div class="grid gap-8 lg:grid-cols-[.7fr_1.3fr] lg:items-center lg:gap-16">
+					<div>
+						<p class="text-xs font-bold tracking-[.2em] text-citrus">UM ROTEIRO DE DESCOBERTAS</p>
+						<h2 id="product-script-title" class="display mt-3 text-3xl font-semibold leading-tight sm:text-4xl">Dê o play. Sinta o conforto. <span class="text-citrus">Escolha o seu próximo favorito.</span></h2>
+						<p class="mt-4 max-w-md text-sm leading-6 text-white/65">Conheça, em poucos segundos, dois produtos que fazem parte da Vitrine.</p>
+					</div>
+					<div class="ad-stage relative overflow-hidden border-y border-white/15 py-8" aria-label="Anúncios dos produtos da Vitrine">
+						<article class="ad-slide" aria-label="Anúncio das meias">
+							<p class="text-xs font-bold tracking-[.18em] text-citrus">CENA 01 · CONFORTO NO DIA A DIA</p>
+							<h3 class="display mt-3 text-3xl font-semibold leading-tight sm:text-5xl">Leve no pé.<br>Pronta para acompanhar você.</h3>
+							<p class="mt-3 max-w-xl text-sm leading-6 text-white/70 sm:text-base">Meia invisível respirável, com interior atoalhado e calcanhar anatômico. Conforto nos detalhes, discrição no visual.</p>
+							<a href="meias.html" class="ad-slide-link mt-5 inline-flex items-center gap-2 text-sm font-bold text-citrus hover:text-white">Conheça as meias <span aria-hidden="true">→</span></a>
+						</article>
+						<article class="ad-slide" aria-label="Anúncio do Game Stick">
+							<p class="text-xs font-bold tracking-[.18em] text-citrus">CENA 02 · DIVERSÃO PARA COMPARTILHAR</p>
+							<h3 class="display mt-3 text-3xl font-semibold leading-tight sm:text-5xl">Sua TV. Seus clássicos.<br>Todo mundo no jogo.</h3>
+							<p class="mt-3 max-w-xl text-sm leading-6 text-white/70 sm:text-base">Game Stick M15 4K com 64GB, mais de 20.000 jogos e dois controles sem fio.</p>
+							<a href="video-games.html" class="ad-slide-link mt-5 inline-flex items-center gap-2 text-sm font-bold text-citrus hover:text-white">Explore video games <span aria-hidden="true">→</span></a>
+						</article>
+						<article class="ad-slide" aria-label="Convite para conhecer os produtos">
+							<p class="text-xs font-bold tracking-[.18em] text-citrus">CENA 03 · SUA PRÓXIMA DESCOBERTA</p>
+							<h3 class="display mt-3 text-3xl font-semibold leading-tight sm:text-5xl">Do cotidiano à diversão.<br>Tem novidade na Vitrine.</h3>
+							<p class="mt-3 max-w-xl text-sm leading-6 text-white/70 sm:text-base">Explore as categorias, confira cada detalhe e escolha o produto que combina com você.</p>
+							<a href="video-games.html" class="ad-slide-link mt-5 inline-flex items-center gap-2 text-sm font-bold text-citrus hover:text-white">Descubra a Vitrine <span aria-hidden="true">→</span></a>
+						</article>
+					</div>
+				</div>
+				<div class="mt-5 flex gap-2" aria-hidden="true">
+					<span class="ad-progress h-1 flex-1 rounded-full bg-citrus"></span>
+					<span class="ad-progress h-1 flex-1 rounded-full bg-citrus"></span>
+					<span class="ad-progress h-1 flex-1 rounded-full bg-citrus"></span>
+				</div>
 			</div>
-			<div class="grid gap-5 md:grid-cols-2">
-				<article id="vestuario" class="product-card order-1 overflow-hidden rounded-lg border border-line bg-white">
-					<a href="meias.html" class="group block">
-						<div class="overflow-hidden bg-[#f0f2ee] p-4 sm:p-7"><img src="meia.webp" alt="Meia invisível com detalhes de tecido respirável e calcanhar anatômico" class="product-image aspect-[1.45/1] w-full object-contain" loading="lazy"></div>
-						<div class="p-5 sm:p-6">
-							<div class="flex items-center justify-between gap-3"><span class="rounded-full bg-[#f8eee8] px-3 py-1 text-[10px] font-bold uppercase tracking-[.13em] text-[#8c4d36]">Vestuário</span><span class="text-xs text-muted">Ver produto ↗</span></div>
-							<h3 class="display mt-4 text-xl font-semibold">Meia invisível respirável</h3>
-							<p class="mt-2 text-sm leading-6 text-muted">Interior atoalhado, calcanhar anatômico e tamanhos M, G e GG.</p>
-							<div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4"><span class="text-sm font-semibold text-muted">Preço sob consulta</span><span class="inline-flex items-center gap-2 rounded-md border border-forest px-4 py-2.5 text-xs font-bold text-forest transition group-hover:bg-forest group-hover:text-white">Ver tamanhos <span aria-hidden="true">→</span></span></div>
-						</div>
-					</a>
-				</article>
-				<article id="games" class="product-card order-2 overflow-hidden rounded-lg border border-line bg-white">
-					<a href="game-stick-m15.html" class="group block">
-						<div class="overflow-hidden bg-[#f0f2ee] p-4 sm:p-7"><img src="sg-11134201-825a6-msbhozmtreo6b4.webp" alt="Game Stick M15, televisão e dois controles sem fio" class="product-image aspect-[1.45/1] w-full object-contain" loading="lazy"></div>
-						<div class="p-5 sm:p-6">
-							<div class="flex items-center justify-between gap-3"><span class="rounded-full bg-[#e6f0eb] px-3 py-1 text-[10px] font-bold uppercase tracking-[.13em] text-forest">Games</span><span class="text-xs text-muted">Ver produto ↗</span></div>
-							<h3 class="display mt-4 text-xl font-semibold">Game Stick M15 4K</h3>
-							<p class="mt-2 text-sm leading-6 text-muted">64GB, mais de 20.000 jogos e dois controles sem fio.</p>
-							<div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4"><span class="text-lg font-bold text-forest">R$ 189,90</span><span class="inline-flex items-center gap-2 rounded-md bg-forest px-4 py-2.5 text-xs font-bold text-white transition group-hover:bg-leaf">Abrir página do Game Stick <span aria-hidden="true">→</span></span></div>
-						</div>
-					</a>
-				</article>
-			</div>
-			<p class="mt-5 text-xs leading-5 text-muted">Valores e disponibilidade podem mudar. Confira as condições na página do produto antes de concluir a compra.</p>
 		</section>
 
 		<section class="border-y border-line bg-white">
 			<div class="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-10 sm:flex-row sm:items-center sm:justify-between lg:px-8">
 				<div><p class="text-xs font-bold tracking-[.18em] text-leaf">A LOJA CRESCE COM VOCÊ</p><h2 class="display mt-2 text-2xl font-semibold">Novos produtos, novas descobertas.</h2></div>
-				<a href="#catalogo" class="inline-flex items-center gap-2 text-sm font-bold text-forest hover:text-leaf">Voltar ao catálogo <span aria-hidden="true">↑</span></a>
+				<a href="video-games.html" class="inline-flex items-center gap-2 text-sm font-bold text-forest hover:text-leaf">Ver video games <span aria-hidden="true">→</span></a>
 			</div>
 		</section>
 	</main>
@@ -112,17 +185,83 @@
 	<script>
 		const menuToggle = document.querySelector('#menu-toggle');
 		const siteNav = document.querySelector('#site-nav');
+		const clothingToggle = document.querySelector('#clothing-toggle');
+		const clothingOptions = document.querySelector('#clothing-options');
+		const menToggle = document.querySelector('#men-toggle');
+		const menOptions = document.querySelector('#men-options');
+		const womenToggle = document.querySelector('#women-toggle');
+		const womenOptions = document.querySelector('#women-options');
+		const electronicsToggle = document.querySelector('#electronics-toggle');
+		const electronicsOptions = document.querySelector('#electronics-options');
+		const closeCategoryMenus = () => {
+			menOptions.classList.add('hidden');
+			menToggle.setAttribute('aria-expanded', 'false');
+			womenOptions.classList.add('hidden');
+			womenToggle.setAttribute('aria-expanded', 'false');
+			electronicsOptions.classList.add('hidden');
+			electronicsToggle.setAttribute('aria-expanded', 'false');
+		};
 		menuToggle.addEventListener('click', () => {
 			const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
 			menuToggle.setAttribute('aria-expanded', String(!expanded));
 			menuToggle.setAttribute('aria-label', expanded ? 'Abrir menu' : 'Fechar menu');
 			siteNav.classList.toggle('hidden', expanded);
+			if (expanded) {
+				clothingOptions.classList.add('hidden');
+				clothingToggle.setAttribute('aria-expanded', 'false');
+				closeCategoryMenus();
+			}
 		});
-		document.querySelectorAll('.nav-item').forEach((link) => link.addEventListener('click', () => {
+		clothingToggle.addEventListener('click', () => {
+			const expanded = clothingToggle.getAttribute('aria-expanded') === 'true';
+			clothingToggle.setAttribute('aria-expanded', String(!expanded));
+			clothingOptions.classList.toggle('hidden', expanded);
+			electronicsOptions.classList.add('hidden');
+			electronicsToggle.setAttribute('aria-expanded', 'false');
+			if (expanded) {
+				closeCategoryMenus();
+			}
+		});
+		menToggle.addEventListener('click', () => {
+			const expanded = menToggle.getAttribute('aria-expanded') === 'true';
+			menToggle.setAttribute('aria-expanded', String(!expanded));
+			menOptions.classList.toggle('hidden', expanded);
+			womenOptions.classList.add('hidden');
+			womenToggle.setAttribute('aria-expanded', 'false');
+			electronicsOptions.classList.add('hidden');
+			electronicsToggle.setAttribute('aria-expanded', 'false');
+		});
+		womenToggle.addEventListener('click', () => {
+			const expanded = womenToggle.getAttribute('aria-expanded') === 'true';
+			womenToggle.setAttribute('aria-expanded', String(!expanded));
+			womenOptions.classList.toggle('hidden', expanded);
+			menOptions.classList.add('hidden');
+			menToggle.setAttribute('aria-expanded', 'false');
+			electronicsOptions.classList.add('hidden');
+			electronicsToggle.setAttribute('aria-expanded', 'false');
+		});
+		electronicsToggle.addEventListener('click', () => {
+			const expanded = electronicsToggle.getAttribute('aria-expanded') === 'true';
+			electronicsToggle.setAttribute('aria-expanded', String(!expanded));
+			electronicsOptions.classList.toggle('hidden', expanded);
+			if (!expanded) {
+				clothingOptions.classList.add('hidden');
+				clothingToggle.setAttribute('aria-expanded', 'false');
+			}
+			menOptions.classList.add('hidden');
+			menToggle.setAttribute('aria-expanded', 'false');
+			womenOptions.classList.add('hidden');
+			womenToggle.setAttribute('aria-expanded', 'false');
+		});
+		document.querySelectorAll('#site-nav a.nav-item').forEach((link) => link.addEventListener('click', () => {
 			siteNav.classList.add('hidden');
 			menuToggle.setAttribute('aria-expanded', 'false');
 			menuToggle.setAttribute('aria-label', 'Abrir menu');
+			clothingOptions.classList.add('hidden');
+			clothingToggle.setAttribute('aria-expanded', 'false');
+			closeCategoryMenus();
 		}));
 	</script>
 </body>
 </html>
+
